@@ -6,11 +6,21 @@
 /*   By: dkaiser <dkaiser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:14:59 by dkaiser           #+#    #+#             */
-/*   Updated: 2024/03/21 15:22:40 by dkaiser          ###   ########.fr       */
+/*   Updated: 2024/03/22 12:05:00 by dkaiser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+int	ft_strlen(const char *str)
+{
+	int	len;
+
+	len = 0;
+	while (str[len])
+		len++;
+	return (len);
+}
 
 char * str_realloc(char *str, size_t size)
 {
