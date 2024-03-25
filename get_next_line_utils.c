@@ -6,7 +6,7 @@
 /*   By: dkaiser <dkaiser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:14:59 by dkaiser           #+#    #+#             */
-/*   Updated: 2024/03/25 11:53:28 by dkaiser          ###   ########.fr       */
+/*   Updated: 2024/03/25 14:18:50 by dkaiser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,24 +22,34 @@ int	ft_strlen(const char *str)
 	return (len);
 }
 
-char	*str_realloc(char *str, size_t size)
+void	clear_buffer(char *buf, int start)
+{
+	while (start < BUFFER_SIZE)
+		buf[start++] = '\0';
+}
+
+char	*str_add_buffer(char *old_str, char *buf, int buf_len)
 {
 	char	*result;
-	size_t	i;
+	int		len;
+	int		i;
 
-	result = malloc(size);
+	if (!old_str)
+		len = buf_len;
+	else
+		len = ft_strlen(old_str) + buf_len;
+	result = malloc(sizeof(char) * (len + 1));
 	if (!result)
-	{
-		free(str);
 		return (NULL);
-	}
+	result[len] = '\0';
 	i = 0;
-	while (str[i])
+	while (old_str && old_str[i])
 	{
-		result[i] = str[i];
+		result[i] = old_str[i];
 		i++;
 	}
-	while (i < size)
-		result[i++] = '\0';
+	while (i < len)
+		result[i++] = *(buf++);
+	free(old_str);
 	return (result);
 }
