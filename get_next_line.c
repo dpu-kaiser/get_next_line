@@ -6,13 +6,13 @@
 /*   By: dkaiser <dkaiser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:13:51 by dkaiser           #+#    #+#             */
-/*   Updated: 2024/03/25 14:20:22 by dkaiser          ###   ########.fr       */
+/*   Updated: 2024/03/25 14:21:58 by dkaiser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int	get_next_line_len(char *buf, int pos)
+static int	get_next_line_len(char *buf, int pos)
 {
 	int	len;
 
@@ -31,7 +31,7 @@ int	get_next_line_len(char *buf, int pos)
 	return (len);
 }
 
-void	get_next_line_rec(int fd, char *buf, char **result, int pos)
+static void	get_next_line_rec(int fd, char *buf, char **result, int pos)
 {
 	int	len;
 	int	i;
