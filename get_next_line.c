@@ -6,13 +6,13 @@
 /*   By: dkaiser <dkaiser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:13:51 by dkaiser           #+#    #+#             */
-/*   Updated: 2024/03/25 12:23:41 by dkaiser          ###   ########.fr       */
+/*   Updated: 2024/03/25 13:01:16 by dkaiser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*str_add_buffer(char *old_str, char *buf, int pos, int buf_len)
+char	*str_add_buffer(char *old_str, char *buf, int buf_len)
 {
 	char	*result;
 	int		len;
@@ -33,19 +33,17 @@ char	*str_add_buffer(char *old_str, char *buf, int pos, int buf_len)
 		i++;
 	}
 	while (i < len)
-		result[i++] = buf[pos++];
+		result[i++] = *(buf++);
+	free(old_str);
 	return (result);
 }
 
-void	get_next_line_rec(int fd, char *buf, char **ptr_result, int pos)
+void	get_next_line_rec(int fd, char *buf, char **result, int pos)
 {
 	int		len;
 	int		i;
-	char	*old_res;
-	char	*result;
 	int		readlen;
 
-	result = *ptr_result;
 	readlen = 0;
 	len = 0;
 	while (pos + len < BUFFER_SIZE)
@@ -59,22 +57,17 @@ void	get_next_line_rec(int fd, char *buf, char **ptr_result, int pos)
 			break ;
 		len++;
 	}
-	old_res = result;
-	result = str_add_buffer(old_res, buf, pos, len);
-	*ptr_result = result;
-	free(old_res);
+	*result = str_add_buffer(*result, buf + pos, len);
 	if (pos + len == BUFFER_SIZE && buf[BUFFER_SIZE - 1] == '\n')
 	{
 		while (pos < BUFFER_SIZE)
 			buf[pos++] = '\0';
 		return ;
 	}
-	if (!result)
-		return ;
-	i = 0;
-	while (i < len)
-		buf[pos + i++] = '\0';
-	if (pos + len == BUFFER_SIZE)
+	len = pos + len;
+	while (pos < len)
+		buf[pos++] = '\0';
+	if (pos == BUFFER_SIZE && *result)
 	{
 		readlen = read(fd, buf, BUFFER_SIZE);
 		if (readlen < 0)
@@ -82,14 +75,13 @@ void	get_next_line_rec(int fd, char *buf, char **ptr_result, int pos)
 			i = 0;
 			while (i < BUFFER_SIZE)
 				buf[i++] = '\0';
-			free(result);
-			*ptr_result = NULL;
+			free(*result);
+			*result = NULL;
 			return ;
 		}
 		if (readlen > 0)
-			get_next_line_rec(fd, buf, &result, 0);
+			get_next_line_rec(fd, buf, result, 0);
 	}
-	*ptr_result = result;
 }
 
 char	*get_next_line(int fd)
@@ -112,9 +104,8 @@ char	*get_next_line(int fd)
 			i = 0;
 			while (i < BUFFER_SIZE)
 				buf[i++] = '\0';
-			return (NULL);
 		}
-		if (readlen > 0)
+		else if (readlen > 0)
 			return (get_next_line(fd));
 		return (NULL);
 	}
