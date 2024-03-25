@@ -6,7 +6,7 @@
 /*   By: dkaiser <dkaiser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:13:51 by dkaiser           #+#    #+#             */
-/*   Updated: 2024/03/25 11:57:40 by dkaiser          ###   ########.fr       */
+/*   Updated: 2024/03/25 12:23:41 by dkaiser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,20 +59,16 @@ void	get_next_line_rec(int fd, char *buf, char **ptr_result, int pos)
 			break ;
 		len++;
 	}
-	if (pos + len == BUFFER_SIZE && buf[BUFFER_SIZE - 1] == '\n')
-	{
-		old_res = result;
-		result = str_add_buffer(old_res, buf, pos, BUFFER_SIZE - pos);
-		*ptr_result = result;
-		free(old_res);
-		while (pos < BUFFER_SIZE)
-			buf[pos++] = '\0';
-		return ;
-	}
 	old_res = result;
 	result = str_add_buffer(old_res, buf, pos, len);
 	*ptr_result = result;
 	free(old_res);
+	if (pos + len == BUFFER_SIZE && buf[BUFFER_SIZE - 1] == '\n')
+	{
+		while (pos < BUFFER_SIZE)
+			buf[pos++] = '\0';
+		return ;
+	}
 	if (!result)
 		return ;
 	i = 0;
