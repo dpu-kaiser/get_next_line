@@ -6,7 +6,7 @@
 /*   By: dkaiser <dkaiser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:13:51 by dkaiser           #+#    #+#             */
-/*   Updated: 2024/03/22 16:51:40 by dkaiser          ###   ########.fr       */
+/*   Updated: 2024/03/25 11:57:40 by dkaiser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	*str_add_buffer(char *old_str, char *buf, int pos, int buf_len)
 		len = buf_len;
 	else
 		len = ft_strlen(old_str) + buf_len;
-	result = malloc(sizeof(char) * len);
+	result = malloc(sizeof(char) * (len + 1));
 	if (!result)
 		return (NULL);
 	result[len] = '\0';
@@ -53,11 +53,21 @@ void	get_next_line_rec(int fd, char *buf, char **ptr_result, int pos)
 		if (buf[pos + len] == '\n')
 		{
 			len++;
-			break;
+			break ;
 		}
 		if (!buf[pos + len])
 			break ;
 		len++;
+	}
+	if (pos + len == BUFFER_SIZE && buf[BUFFER_SIZE - 1] == '\n')
+	{
+		old_res = result;
+		result = str_add_buffer(old_res, buf, pos, BUFFER_SIZE - pos);
+		*ptr_result = result;
+		free(old_res);
+		while (pos < BUFFER_SIZE)
+			buf[pos++] = '\0';
+		return ;
 	}
 	old_res = result;
 	result = str_add_buffer(old_res, buf, pos, len);
@@ -71,6 +81,15 @@ void	get_next_line_rec(int fd, char *buf, char **ptr_result, int pos)
 	if (pos + len == BUFFER_SIZE)
 	{
 		readlen = read(fd, buf, BUFFER_SIZE);
+		if (readlen < 0)
+		{
+			i = 0;
+			while (i < BUFFER_SIZE)
+				buf[i++] = '\0';
+			free(result);
+			*ptr_result = NULL;
+			return ;
+		}
 		if (readlen > 0)
 			get_next_line_rec(fd, buf, &result, 0);
 	}
@@ -92,6 +111,13 @@ char	*get_next_line(int fd)
 	if (i == BUFFER_SIZE)
 	{
 		readlen = read(fd, buf, BUFFER_SIZE);
+		if (readlen < 0)
+		{
+			i = 0;
+			while (i < BUFFER_SIZE)
+				buf[i++] = '\0';
+			return (NULL);
+		}
 		if (readlen > 0)
 			return (get_next_line(fd));
 		return (NULL);
