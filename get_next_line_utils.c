@@ -6,7 +6,7 @@
 /*   By: dkaiser <dkaiser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:14:59 by dkaiser           #+#    #+#             */
-/*   Updated: 2024/03/25 14:18:50 by dkaiser          ###   ########.fr       */
+/*   Updated: 2024/03/26 10:49:08 by dkaiser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ int	ft_strlen(const char *str)
 {
 	int	len;
 
+	if (!str)
+		return (0);
 	len = 0;
 	while (str[len])
 		len++;
@@ -40,7 +42,10 @@ char	*str_add_buffer(char *old_str, char *buf, int buf_len)
 		len = ft_strlen(old_str) + buf_len;
 	result = malloc(sizeof(char) * (len + 1));
 	if (!result)
+	{
+		free(old_str);
 		return (NULL);
+	}
 	result[len] = '\0';
 	i = 0;
 	while (old_str && old_str[i])

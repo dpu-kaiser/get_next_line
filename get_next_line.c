@@ -6,7 +6,7 @@
 /*   By: dkaiser <dkaiser@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:13:51 by dkaiser           #+#    #+#             */
-/*   Updated: 2024/03/25 14:21:58 by dkaiser          ###   ########.fr       */
+/*   Updated: 2024/03/25 15:26:21 by dkaiser          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,8 @@ static void	get_next_line_rec(int fd, char *buf, char **result, int pos)
 			clear_buffer(buf, 0);
 			free(*result);
 			*result = NULL;
-			return ;
 		}
-		if (readlen > 0)
+		else if (readlen > 0)
 			get_next_line_rec(fd, buf, result, 0);
 	}
 }
